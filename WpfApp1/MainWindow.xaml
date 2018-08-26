@@ -1,0 +1,204 @@
+﻿<Window x:Class="WpfApp1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp1"
+        mc:Ignorable="d"
+        Title="FFmpegFa Wpf Sample" Height="400" Width="600">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Input file:" Margin="5"/>
+            <TextBox x:Name="txtInputFile"
+                     Margin="5" Grid.Column="1"/>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Output file:"
+                       Margin="5" />
+            <TextBox x:Name="txtOutputFile"
+                     Margin="5"
+                     Grid.Column="1" />
+        </Grid>
+        <Rectangle Fill="Black"
+                   Grid.Row="2"
+                   Opacity=".7"
+                   Height="1" />
+        <Grid Grid.Row="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Subtitle file 1:"
+                           Margin="5" />
+                <TextBox x:Name="txtSubtitleFile1"
+                         Margin="5"
+                         Grid.Column="1" />
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Subtitle file 2:"
+                           Margin="5" />
+                <TextBox x:Name="txtSubtitleFile2"
+                         Margin="5"
+                         Grid.Column="1" />
+            </Grid>
+        </Grid>
+        <Rectangle Fill="Black"
+                   Grid.Row="4"
+                   Opacity=".7"
+                   Height="1" />
+        <Grid Grid.Row="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Audio file 1:"
+                           Margin="5" />
+                <TextBox x:Name="txtAudioFile1"
+                         Margin="5"
+                         Grid.Column="1" />
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Audio file 2:"
+                           Margin="5" />
+                <TextBox x:Name="txtAudioFile2"
+                         Margin="5"
+                         Grid.Column="1" />
+            </Grid>
+        </Grid>
+        <Rectangle Fill="Black"
+                   Grid.Row="6"
+                   Opacity=".7"
+                   Height="1" />
+        <WrapPanel Grid.Row="7">
+            <!--<Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>-->
+
+            <Button x:Name="btnConvertVideo"
+                    Content="Convert video"
+                    Margin="5"
+                    Width="110"
+                    Height="30"
+                    Click="OnConvertVideoClick"/>
+            <Button x:Name="btnConvertVideoWithSettings"
+                    Content="Convert video with settings"
+                    Margin="5"
+                    Width="170"
+                    Height="30"
+                    Click="OnConvertVideoWithSettingsClick" />
+            <Button x:Name="btnConvertAudio"
+                    Content="Convert audio"
+                    Margin="5"
+                    Width="100"
+                    Height="30"
+                    Click="OnConvertAudioClick" />
+            <Button x:Name="btnConvertAudioWithSettings"
+                    Content="Convert audio with settings"
+                    Margin="5"
+                    Width="170"
+                    Height="30"
+                    Click="OnConvertAudioWithSettingsClick" />
+
+            <Button x:Name="btnRemoveAudioFromVideo"
+                    Content="Remove audio from video"
+                    Margin="5"
+                    Width="170"
+                    Height="30"
+                    Click="OnRemoveAudioFromVideoClick" />
+
+            <Button x:Name="btnExtractAudioFromVideo"
+                    Content="Extract audio from video"
+                    Margin="5"
+                    Width="170"
+                    Height="30"
+                    Click="OnExtractAudioFromVideoClick" />
+
+            <Button x:Name="btnResizeVideo"
+                    Content="Resize video"
+                    Margin="5"
+                    Width="110"
+                    Height="30"
+                    Click="OnResizeVideoClick" />
+            <Button x:Name="btnCropVideoOrAudio"
+                    Content="Crop video or audio"
+                    Margin="5"
+                    Width="170"
+                    Height="30"
+                    Click="OnCropVideoOrAudioClick" />
+            <Button x:Name="btnBurnSubtitleIntoVideo"
+                    Content="Burn subtitle into video"
+                    Margin="5"
+                    Width="170"
+                    Height="30"
+                    Click="OnBurnSubtitleIntoVideoClick" />
+            <Button x:Name="btnMergeSubtitlesToVideo"
+                    Content="Merge subtitles to video"
+                    Margin="5"
+                    Width="170"
+                    Height="30"
+                    Click="OnMergeSubtitlesToVideoClick" />
+
+            <Button x:Name="btnMergeAudioToVideo"
+                    Content="Merge audios to video"
+                    Margin="5"
+                    Width="170"
+                    Height="30"
+                    Click="OnMergeAudioToVideoClick" />
+
+            <Button x:Name="btnExtractImageFromVideo"
+                    Content="Extract image from video"
+                    Margin="5"
+                    Width="170"
+                    Height="30"
+                    Click="OnExtractImageFromVideoClick" />
+
+        </WrapPanel>
+
+        <ProgressBar x:Name="progressBar"
+                     Grid.Row="8"
+                     Height="20" />
+        <TextBlock x:Name="txtProgress"
+                   Grid.Row="8"
+                   Margin="5" VerticalAlignment="Center" 
+                   HorizontalAlignment="Center" />
+    </Grid>
+</Window>
