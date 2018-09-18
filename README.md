@@ -13,7 +13,7 @@ Use this library as dll, reference from [NuGet](https://www.nuget.org/packages/F
 
 Nuget package manager command:
 ```
-PM> Install-Package InstagramApiSharp
+PM> Install-Package FFmpegFa
 ```
 
 | Platform | Supported Version |
