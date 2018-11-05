@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{044E2738-F595-4186-AB3A-766DA0F7C0A1}</ProjectGuid>
+    <ProjectGuid>{3860B157-878B-40D3-ACF0-DAE2317A5699}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>FFmpegFaSample</RootNamespace>
-    <AssemblyName>FFmpegFaSample</AssemblyName>
+    <RootNamespace>FFmpegFaWinform</RootNamespace>
+    <AssemblyName>FFmpegFaWinform</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

@@ -5,13 +5,13 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("FFmpegFaSample")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("FFmpegFaWinform")]
+[assembly: AssemblyDescription("Winform sample of using FFmpegFa")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("FFmpegFaSample")]
-[assembly: AssemblyCopyright("Copyright ©  2018")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCompany("Nasrollah Jokar [Ramtin]")]
+[assembly: AssemblyProduct("FFmpegFaWinform")]
+[assembly: AssemblyCopyright("Copyright ©  2018 - Esfand 1396")]
+[assembly: AssemblyTrademark("Ramtinak@live.com")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("044e2738-f595-4186-ab3a-766da0f7c0a1")]
+[assembly: Guid("3860b157-878b-40d3-acf0-dae2317a5699")]
 
 // Version information for an assembly consists of the following four values:
 //

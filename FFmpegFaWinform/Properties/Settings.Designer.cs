@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace FFmpegFaSample.Properties
+namespace FFmpegFaWinform.Properties
 {
 
 

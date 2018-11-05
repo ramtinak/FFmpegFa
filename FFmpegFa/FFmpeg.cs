@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Text;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -86,7 +88,7 @@ namespace FFmpegFa
         /// نسخه کتابخانه را به شما باز میگرداند
         /// </summary>
         /// <returns>نسخه کتابخانه</returns>
-        public string LibraryVersion() { return "1.0.0.0"; }
+        public string LibraryVersion() { return "1.1.0.0"; }
         /// <summary>
         /// درباره سازنده این کتابخانه
         /// </summary>
@@ -1377,6 +1379,213 @@ namespace FFmpegFa
                 //GetResult("End act");
             })).Start();
         }
+
+        public void AddWatermarkText(string inputFile, string outputFile, WatermarkText watermarkText)
+        {
+            if (string.IsNullOrEmpty(inputFile))
+                throw new Exception("Inputfile is empty. Choose an input file.");
+            if (string.IsNullOrEmpty(outputFile))
+                throw new Exception("Outputfile is empty. Choose an output file.");
+            if (watermarkText == null)
+                throw new Exception("WatermarkText is null. Set an water mark text.");
+            if (string.IsNullOrEmpty(watermarkText.FontPath))
+                throw new Exception("FontPath is null or empty. Set an font path ( an .ttf file).");
+            //ffmpeg -i "C:\test.mp4"
+            // -vf "drawtext=text='Place text here':x=10:y=H-th-10:
+            //               fontfile=/path/to/font.ttf:fontsize=12:fontcolor=white:
+            //               shadowcolor=black:shadowx=5:shadowy=5"
+            //"C:\test-watermark.mp4"
+
+            //ffmpeg -i input.mp4 -i logo.png -filter_complex \
+            //"overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/2" \
+            //-codec:a copy output.mp4
+
+
+            watermarkText.FontPath = watermarkText.FontPath.Replace("\\", "/");
+            var cmd = $"-i \"{inputFile}\" -vf \"drawtext=text='{watermarkText.Text}':x={watermarkText.Padding}:y=H-th-{watermarkText.Padding}:" +
+       $"fontfile='{watermarkText.FontPath}':fontsize={watermarkText.FontSize}:fontcolor=white\" " +
+       //$"-filter_complex \"overlay={overlay}\" " +
+       $"\"{outputFile}\"";
+            //     var cmd = $"-i \"{inputFile}\" -vf \"drawtext=text='{watermarkText.Text}':x=10:y=H-th-10:" +
+            //$"fontfile='{watermarkText.FontPath}':fontsize={watermarkText.FontSize}:fontcolor={watermarkText.ForegroundColor.Name.ToLower()}:" +
+            //$"shadowcolor={watermarkText.BackgroundColor.Name.ToLower()}:shadowx={watermarkText.ShadowX}:shadowy={watermarkText.ShadowY}\" " +
+            ////$"-filter_complex \"overlay={overlay}\" " +
+            //$"\"{outputFile}\"";
+
+
+            Debug.WriteLine(cmd);
+
+
+            Process process = new Process();
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.RedirectStandardError = true;
+            process.StartInfo.FileName = StartupPath + FFmpegPath;
+            process.StartInfo.Arguments = cmd;
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.CreateNoWindow = true;
+            process.StartInfo.RedirectStandardError = true;
+            process.Start();
+            new Thread(new ThreadStart(() => {
+
+                StreamReader sr = process.StandardError;
+                Debug.WriteLine("Start.....");
+                var name = "";
+                if (inputFile.Contains("\\"))
+                    name = Path.GetFileName(inputFile);
+                else name = inputFile;
+
+
+                progress = new FFmpegProgress();
+                bool d = false;
+                TimeSpan totalTimeSpan = TimeSpan.FromMilliseconds(0);
+                //Debug.WriteLine("Total:" + totalTimeSpan.TotalMilliseconds);
+                //frame=   18 fps=0.0 q=0.0 size=       7kB time=00:00:00.88 bitrate=  68.8kbits/s speed=1.69x   
+                while (!sr.EndOfStream)
+                {
+                    var v = (sr.ReadLine());
+                    Debug.WriteLine(v);
+                    if (v.ToLower().Contains("duration") && !d)
+                    {
+                        try
+                        {
+                            FFmpegInfo fFmpegInfo = new FFmpegInfo(v, name);
+                            totalTimeSpan = fFmpegInfo.Duration;
+                            progress.InputFileInfo = fFmpegInfo;
+
+                            //Debug.WriteLine(fFmpegInfo.Duration.ToString());
+                            d = true;
+                        }
+                        catch { }
+                    }
+                    if (v.Contains("time=") && totalTimeSpan.TotalMilliseconds != 0)
+                    {
+                        try
+                        {
+                            SendProgress(totalTimeSpan, v);
+                        }
+                        catch { }
+                    }
+                }
+                try
+                {
+                    SendProgress(totalTimeSpan, ".:::END:::.");
+                    // 100%
+                }
+                catch { }
+                Debug.WriteLine("End.....");
+
+                //GetResult("End act");
+            })).Start();
+        }
+
+
+        public void AddWatermarkImage(string inputFile, string outputFile, WatermarkImage watermarkImage)
+        {
+            if (string.IsNullOrEmpty(inputFile))
+                throw new Exception("Inputfile is empty. Choose an input file.");
+            if (string.IsNullOrEmpty(outputFile))
+                throw new Exception("Outputfile is empty. Choose an output file.");
+            if (watermarkImage == null)
+                throw new Exception("WatermarkText is null. Set an water mark text.");
+            if (string.IsNullOrEmpty(watermarkImage.ImagePath))
+                throw new Exception("ImagePath is null or empty. Set an image path.");
+
+            //ffmpeg -i input.mp4 -i logo.png -filter_complex \
+            //"overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/2" \
+            //-codec:a copy output.mp4
+            var overlay = string.Empty;
+
+            switch(watermarkImage.Place)
+            {
+                case WatermarkPlace.Center:
+                    overlay = "(W-w)/2:(H-h)/2";
+                    break;
+                case WatermarkPlace.TopLeft:
+                    overlay = $"{watermarkImage.Padding}:{watermarkImage.Padding}";
+                    break;
+                case WatermarkPlace.TopRight:
+                    overlay = $"W-w-{watermarkImage.Padding}:{watermarkImage.Padding}";
+                    break;
+                case WatermarkPlace.BottomLeft:
+                    overlay = $"5:H-h-{watermarkImage.Padding}";
+                    break;
+                case WatermarkPlace.BottomRight:
+                    overlay = $"W-w-{watermarkImage.Padding}:H-h-{watermarkImage.Padding}";
+                    break;
+            }
+
+            var cmd = $"-i \"{inputFile}\" -i \"{watermarkImage.ImagePath}\" " +
+       $"-filter_complex \"overlay={overlay}\" -codec:a copy " +
+       $"\"{outputFile}\"";
+
+
+            Debug.WriteLine(cmd);
+
+
+            Process process = new Process();
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.RedirectStandardError = true;
+            process.StartInfo.FileName = StartupPath + FFmpegPath;
+            process.StartInfo.Arguments = cmd;
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.CreateNoWindow = true;
+            process.StartInfo.RedirectStandardError = true;
+            process.Start();
+            new Thread(new ThreadStart(() => {
+
+                StreamReader sr = process.StandardError;
+                Debug.WriteLine("Start.....");
+                var name = "";
+                if (inputFile.Contains("\\"))
+                    name = Path.GetFileName(inputFile);
+                else name = inputFile;
+
+
+                progress = new FFmpegProgress();
+                bool d = false;
+                TimeSpan totalTimeSpan = TimeSpan.FromMilliseconds(0);
+                //Debug.WriteLine("Total:" + totalTimeSpan.TotalMilliseconds);
+                //frame=   18 fps=0.0 q=0.0 size=       7kB time=00:00:00.88 bitrate=  68.8kbits/s speed=1.69x   
+                while (!sr.EndOfStream)
+                {
+                    var v = (sr.ReadLine());
+                    Debug.WriteLine(v);
+                    if (v.ToLower().Contains("duration") && !d)
+                    {
+                        try
+                        {
+                            FFmpegInfo fFmpegInfo = new FFmpegInfo(v, name);
+                            totalTimeSpan = fFmpegInfo.Duration;
+                            progress.InputFileInfo = fFmpegInfo;
+
+                            //Debug.WriteLine(fFmpegInfo.Duration.ToString());
+                            d = true;
+                        }
+                        catch { }
+                    }
+                    if (v.Contains("time=") && totalTimeSpan.TotalMilliseconds != 0)
+                    {
+                        try
+                        {
+                            SendProgress(totalTimeSpan, v);
+                        }
+                        catch { }
+                    }
+                }
+                try
+                {
+                    SendProgress(totalTimeSpan, ".:::END:::.");
+                    // 100%
+                }
+                catch { }
+                Debug.WriteLine("End.....");
+
+                //GetResult("End act");
+            })).Start();
+        }
+
+
+
         /// <summary>
         /// پروسه فایل
         /// </summary>

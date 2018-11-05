@@ -37,5 +37,8 @@ namespace FFmpegFa.Interfaces
         void MergeAudioToVideo(string inputFile, string outputFile, bool removeDefaultAudio, params string[] audiosFilesPaths);
         void MergeAudioToVideo(string inputFile, string outputFile, bool removeDefaultAudio, AudioBitRate outputAudioBitRate, params string[] audiosFilesPaths);
         void ExtractImageFromVideo(string inputFile, string outputFile);
+
+        void AddWatermarkText(string inputFile, string outputFile, WatermarkText watermarkText);
+        void AddWatermarkImage(string inputFile, string outputFile, WatermarkImage watermarkImage);
     }
 }
