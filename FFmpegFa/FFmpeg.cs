@@ -77,6 +77,9 @@ namespace FFmpegFa
     /// </summary>
     public class FFmpeg: Interfaces.IFFmpeg, IDisposable
     {
+
+        public bool IsDebugMode { get; set; } = false;
+
         string StartupPath;
         const string FFmpegPath = @"\ffmpeg.exe";
         /// <summary>
@@ -127,26 +130,13 @@ namespace FFmpegFa
             {
                 if (!File.Exists(StartupPath + FFmpegPath))
                 {
-                    //new Thread(new ThreadStart(() =>
-                    //{
-                    Stopwatch stopwatch = new Stopwatch();
-                    stopwatch.Start();
                     if (!Directory.Exists(StartupPath))
                         Directory.CreateDirectory(StartupPath);
-                    var filePath = StartupPath + @"\ffmpeg.zip";
+                    var filePath = StartupPath + FFmpegPath;
                     File.WriteAllBytes(filePath, Properties.Resources.ffmpeg);
-                    //Thread.Sleep(4000);
-                    ArchiveManager.UnArchive(filePath, StartupPath);
-                    //Thread.Sleep(1200);
-                    //File.Delete(tempFilePath);
-                    filePath = null;
-                    stopwatch.Stop();
-                    Debug.WriteLine(stopwatch.Elapsed.ToString());
-                    //})).Start();
-
                 }
             }
-            catch (Exception ex) { Debug.WriteLine("ExtractFFmpeg ex: " + ex.Message); }
+            catch (Exception ex) { Output("ExtractFFmpeg ex: " + ex.Message); }
         }
         
         /// <summary>
@@ -341,13 +331,13 @@ namespace FFmpegFa
             process.StartInfo.RedirectStandardError = true;
             process.Start();
             //Thread.Sleep(3000);
-            //Debug.WriteLine(process.ProcessName);
+            //Output(process.ProcessName);
             //return;
 
             new Thread(new ThreadStart(() => {
 
                 StreamReader sr = process.StandardError;
-                Debug.WriteLine("Start.....");
+                Output("Start.....");
                 //GetResult("Start act\r\n" + sr.ReadToEnd() + "\r\nEnd Act");
 
                 var name = "";
@@ -359,7 +349,7 @@ namespace FFmpegFa
                 progress = new FFmpegProgress();
                 bool d = false;
                 TimeSpan totalTimeSpan = TimeSpan.FromMilliseconds(0);
-                Debug.WriteLine("Total:" + totalTimeSpan.TotalMilliseconds);
+                Output("Total:" + totalTimeSpan.TotalMilliseconds);
                 //frame=   18 fps=0.0 q=0.0 size=       7kB time=00:00:00.88 bitrate=  68.8kbits/s speed=1.69x   
                 while (!sr.EndOfStream)
                 {
@@ -373,7 +363,7 @@ namespace FFmpegFa
                             progress.InputFileInfo = fFmpegInfo;
 
 
-                            //Debug.WriteLine(fFmpegInfo.Duration.ToString());
+                            //Output(fFmpegInfo.Duration.ToString());
                             d = true;
                         }
                         catch { }
@@ -393,7 +383,7 @@ namespace FFmpegFa
                     // 100%
                 }
                 catch { }
-                Debug.WriteLine("End.....");
+                Output("End.....");
 
                 //GetResult("End act");
             })).Start();
@@ -483,13 +473,13 @@ namespace FFmpegFa
             process.StartInfo.RedirectStandardError = true;
             process.Start();
             //Thread.Sleep(3000);
-            //Debug.WriteLine(process.ProcessName);
+            //Output(process.ProcessName);
             //return;
 
             new Thread(new ThreadStart(() => {
 
                 StreamReader sr = process.StandardError;
-                Debug.WriteLine("Start.....");
+                Output("Start.....");
                 //GetResult("Start act\r\n" + sr.ReadToEnd() + "\r\nEnd Act");
 
                 var name = "";
@@ -501,7 +491,7 @@ namespace FFmpegFa
                 progress = new FFmpegProgress();
                 bool d = false;
                 TimeSpan totalTimeSpan = TimeSpan.FromMilliseconds(0);
-                Debug.WriteLine("Total:" + totalTimeSpan.TotalMilliseconds);
+                Output("Total:" + totalTimeSpan.TotalMilliseconds);
                 //        //frame=   18 fps=0.0 q=0.0 size=       7kB time=00:00:00.88 bitrate=  68.8kbits/s speed=1.69x   
                 while (!sr.EndOfStream)
                 {
@@ -514,7 +504,7 @@ namespace FFmpegFa
                             totalTimeSpan = fFmpegInfo.Duration;
                             progress.InputFileInfo = fFmpegInfo;
 
-                            Debug.WriteLine(fFmpegInfo.Duration.ToString());
+                            Output(fFmpegInfo.Duration.ToString());
                             d = true;
                         }
                         catch { }
@@ -534,7 +524,7 @@ namespace FFmpegFa
                     // 100%
                 }
                 catch { }
-                Debug.WriteLine("End.....");
+                Output("End.....");
 
                 //GetResult("End act");
             })).Start();
@@ -573,13 +563,13 @@ namespace FFmpegFa
             process.StartInfo.RedirectStandardError = true;
             process.Start();
             //Thread.Sleep(3000);
-            //Debug.WriteLine(process.ProcessName);
+            //Output(process.ProcessName);
             //return;
 
             new Thread(new ThreadStart(() => {
 
                 StreamReader sr = process.StandardError;
-                Debug.WriteLine("Start.....");
+                Output("Start.....");
                 //GetResult("Start act\r\n" + sr.ReadToEnd() + "\r\nEnd Act");
 
                 var name = "";
@@ -591,12 +581,12 @@ namespace FFmpegFa
                 progress = new FFmpegProgress();
                 bool d = false;
                 TimeSpan totalTimeSpan = TimeSpan.FromMilliseconds(0);
-                Debug.WriteLine("Total:" + totalTimeSpan.TotalMilliseconds);
+                Output("Total:" + totalTimeSpan.TotalMilliseconds);
                 //frame=   18 fps=0.0 q=0.0 size=       7kB time=00:00:00.88 bitrate=  68.8kbits/s speed=1.69x   
                 while (!sr.EndOfStream)
                 {
                     var v = (sr.ReadLine());
-                    Debug.WriteLine(v);
+                    Output(v);
                     if (v.ToLower().Contains("duration") && !d)
                     {
                         try
@@ -605,7 +595,7 @@ namespace FFmpegFa
                             totalTimeSpan = fFmpegInfo.Duration;
                             progress.InputFileInfo = fFmpegInfo;
 
-                            //Debug.WriteLine(fFmpegInfo.Duration.ToString());
+                            //Output(fFmpegInfo.Duration.ToString());
                             d = true;
                         }
                         catch { }
@@ -625,7 +615,7 @@ namespace FFmpegFa
                     // 100%
                 }
                 catch { }
-                Debug.WriteLine("End.....");
+                Output("End.....");
 
                 //GetResult("End act");
             })).Start();
@@ -678,13 +668,13 @@ namespace FFmpegFa
             process.StartInfo.RedirectStandardError = true;
             process.Start();
             //Thread.Sleep(3000);
-            //Debug.WriteLine(process.ProcessName);
+            //Output(process.ProcessName);
             //return;
 
             new Thread(new ThreadStart(() => {
 
                 StreamReader sr = process.StandardError;
-                Debug.WriteLine("Start.....");
+                Output("Start.....");
                 //GetResult("Start act\r\n" + sr.ReadToEnd() + "\r\nEnd Act");
 
                 var name = "";
@@ -696,7 +686,7 @@ namespace FFmpegFa
                 progress = new FFmpegProgress();
                 bool d = false;
                 TimeSpan totalTimeSpan = TimeSpan.FromMilliseconds(0);
-                Debug.WriteLine("Total:" + totalTimeSpan.TotalMilliseconds);
+                Output("Total:" + totalTimeSpan.TotalMilliseconds);
                 //frame=   18 fps=0.0 q=0.0 size=       7kB time=00:00:00.88 bitrate=  68.8kbits/s speed=1.69x   
                 while (!sr.EndOfStream)
                 {
@@ -709,7 +699,7 @@ namespace FFmpegFa
                             totalTimeSpan = fFmpegInfo.Duration;
                             progress.InputFileInfo = fFmpegInfo;
 
-                            //Debug.WriteLine(fFmpegInfo.Duration.ToString());
+                            //Output(fFmpegInfo.Duration.ToString());
                             d = true;
                         }
                         catch { }
@@ -729,7 +719,7 @@ namespace FFmpegFa
                     // 100%
                 }
                 catch { }
-                Debug.WriteLine("End.....");
+                Output("End.....");
 
                 //GetResult("End act");
             })).Start();
@@ -769,7 +759,7 @@ namespace FFmpegFa
             new Thread(new ThreadStart(() => {
 
                 StreamReader sr = process.StandardError;
-                Debug.WriteLine("Start.....");
+                Output("Start.....");
                 var name = "";
                 if (inputFile.Contains("\\"))
                     name = Path.GetFileName(inputFile);
@@ -779,12 +769,12 @@ namespace FFmpegFa
                 progress = new FFmpegProgress();
                 bool d = false;
                 TimeSpan totalTimeSpan = TimeSpan.FromMilliseconds(0);
-                Debug.WriteLine("Total:" + totalTimeSpan.TotalMilliseconds);
+                Output("Total:" + totalTimeSpan.TotalMilliseconds);
                 //frame=   18 fps=0.0 q=0.0 size=       7kB time=00:00:00.88 bitrate=  68.8kbits/s speed=1.69x   
                 while (!sr.EndOfStream)
                 {
                     var v = (sr.ReadLine());
-                    Debug.WriteLine(v);
+                    Output(v);
                     if (v.ToLower().Contains("duration") && !d)
                     {
                         try
@@ -793,7 +783,7 @@ namespace FFmpegFa
                             totalTimeSpan = fFmpegInfo.Duration;
                             progress.InputFileInfo = fFmpegInfo;
 
-                            //Debug.WriteLine(fFmpegInfo.Duration.ToString());
+                            //Output(fFmpegInfo.Duration.ToString());
                             d = true;
                         }
                         catch { }
@@ -813,7 +803,7 @@ namespace FFmpegFa
                     // 100%
                 }
                 catch { }
-                Debug.WriteLine("End.....");
+                Output("End.....");
 
                 //GetResult("End act");
             })).Start();
@@ -867,7 +857,7 @@ namespace FFmpegFa
             new Thread(new ThreadStart(() => {
 
                 StreamReader sr = process.StandardError;
-                Debug.WriteLine("Start.....");
+                Output("Start.....");
                 var name = "";
                 if (inputFile.Contains("\\"))
                     name = Path.GetFileName(inputFile);
@@ -877,12 +867,12 @@ namespace FFmpegFa
                 progress = new FFmpegProgress();
                 bool d = false;
                 TimeSpan totalTimeSpan = TimeSpan.FromMilliseconds(0);
-                Debug.WriteLine("Total:" + totalTimeSpan.TotalMilliseconds);
+                Output("Total:" + totalTimeSpan.TotalMilliseconds);
                 //frame=   18 fps=0.0 q=0.0 size=       7kB time=00:00:00.88 bitrate=  68.8kbits/s speed=1.69x   
                 while (!sr.EndOfStream)
                 {
                     var v = (sr.ReadLine());
-                    Debug.WriteLine(v);
+                    Output(v);
                     if (v.ToLower().Contains("duration") && !d)
                     {
                         try
@@ -891,7 +881,7 @@ namespace FFmpegFa
                             totalTimeSpan = fFmpegInfo.Duration;
                             progress.InputFileInfo = fFmpegInfo;
 
-                            //Debug.WriteLine(fFmpegInfo.Duration.ToString());
+                            //Output(fFmpegInfo.Duration.ToString());
                             d = true;
                         }
                         catch { }
@@ -911,7 +901,7 @@ namespace FFmpegFa
                     // 100%
                 }
                 catch { }
-                Debug.WriteLine("End.....");
+                Output("End.....");
 
                 //GetResult("End act");
             })).Start();
@@ -969,7 +959,7 @@ namespace FFmpegFa
             //cmd = $"-i \"{inputFile}\" \"{subtitle}\" -c copy -c:s mov_text -c:v copy -c:a copy \"{outputFile}\"";
             //ffmpeg -i input.mp4 -f srt -i input.srt -i input2.srt\ -map 0:0 -map 0:1 -map 1:0 -map 2:0 -c:v copy -c:a copy \ -c:s srt -c:s srt output.mkv
             cmd = $"-i \"{inputFile}\" -f srt {subtitle.TrimEnd()} -map 0:0 -map 0:1 {map.TrimEnd()} -c:v copy -c:a copy {cs.TrimEnd()} {meta.TrimEnd()} \"{outputFile}\"";
-            Debug.WriteLine(cmd);
+            Output(cmd);
             //var lib = "libx264";
             //cmd = (string.Format(FFmpegCommands.ConvertUltraFast, inputFile, outputFile, lib));
             //ffmpeg -i video.avi -vf subtitles=subtitle.srt out.avi
@@ -988,7 +978,7 @@ namespace FFmpegFa
             new Thread(new ThreadStart(() => {
 
                 StreamReader sr = process.StandardError;
-                Debug.WriteLine("Start.....");
+                Output("Start.....");
                 var name = "";
                 if (inputFile.Contains("\\"))
                     name = Path.GetFileName(inputFile);
@@ -998,12 +988,12 @@ namespace FFmpegFa
                 progress = new FFmpegProgress();
                 bool d = false;
                 TimeSpan totalTimeSpan = TimeSpan.FromMilliseconds(0);
-                Debug.WriteLine("Total:" + totalTimeSpan.TotalMilliseconds);
+                Output("Total:" + totalTimeSpan.TotalMilliseconds);
                 //frame=   18 fps=0.0 q=0.0 size=       7kB time=00:00:00.88 bitrate=  68.8kbits/s speed=1.69x   
                 while (!sr.EndOfStream)
                 {
                     var v = (sr.ReadLine());
-                    Debug.WriteLine(v);
+                    Output(v);
                     if (v.ToLower().Contains("duration") && !d)
                     {
                         try
@@ -1012,7 +1002,7 @@ namespace FFmpegFa
                             totalTimeSpan = fFmpegInfo.Duration;
                             progress.InputFileInfo = fFmpegInfo;
 
-                            //Debug.WriteLine(fFmpegInfo.Duration.ToString());
+                            //Output(fFmpegInfo.Duration.ToString());
                             d = true;
                         }
                         catch { }
@@ -1032,7 +1022,7 @@ namespace FFmpegFa
                     // 100%
                 }
                 catch { }
-                Debug.WriteLine("End.....");
+                Output("End.....");
 
                 //GetResult("End act");
             })).Start();
@@ -1069,7 +1059,7 @@ namespace FFmpegFa
             new Thread(new ThreadStart(() => {
 
                 StreamReader sr = process.StandardError;
-                Debug.WriteLine("Start.....");
+                Output("Start.....");
                 var name = "";
                 if (inputFile.Contains("\\"))
                     name = Path.GetFileName(inputFile);
@@ -1079,12 +1069,12 @@ namespace FFmpegFa
                 progress = new FFmpegProgress();
                 bool d = false;
                 TimeSpan totalTimeSpan = TimeSpan.FromMilliseconds(0);
-                //Debug.WriteLine("Total:" + totalTimeSpan.TotalMilliseconds);
+                //Output("Total:" + totalTimeSpan.TotalMilliseconds);
                 //frame=   18 fps=0.0 q=0.0 size=       7kB time=00:00:00.88 bitrate=  68.8kbits/s speed=1.69x   
                 while (!sr.EndOfStream)
                 {
                     var v = (sr.ReadLine());
-                    Debug.WriteLine(v);
+                    Output(v);
                     if (v.ToLower().Contains("duration") && !d)
                     {
                         try
@@ -1093,7 +1083,7 @@ namespace FFmpegFa
                             totalTimeSpan = fFmpegInfo.Duration;
                             progress.InputFileInfo = fFmpegInfo;
 
-                            //Debug.WriteLine(fFmpegInfo.Duration.ToString());
+                            //Output(fFmpegInfo.Duration.ToString());
                             d = true;
                         }
                         catch { }
@@ -1113,7 +1103,7 @@ namespace FFmpegFa
                     // 100%
                 }
                 catch { }
-                Debug.WriteLine("End.....");
+                Output("End.....");
 
                 //GetResult("End act");
             })).Start();
@@ -1153,7 +1143,7 @@ namespace FFmpegFa
             new Thread(new ThreadStart(() => {
 
                 StreamReader sr = process.StandardError;
-                Debug.WriteLine("Start.....");
+                Output("Start.....");
                 var name = "";
                 if (inputFile.Contains("\\"))
                     name = Path.GetFileName(inputFile);
@@ -1163,12 +1153,12 @@ namespace FFmpegFa
                 progress = new FFmpegProgress();
                 bool d = false;
                 TimeSpan totalTimeSpan = TimeSpan.FromMilliseconds(0);
-                //Debug.WriteLine("Total:" + totalTimeSpan.TotalMilliseconds);
+                //Output("Total:" + totalTimeSpan.TotalMilliseconds);
                 //frame=   18 fps=0.0 q=0.0 size=       7kB time=00:00:00.88 bitrate=  68.8kbits/s speed=1.69x   
                 while (!sr.EndOfStream)
                 {
                     var v = (sr.ReadLine());
-                    Debug.WriteLine(v);
+                    Output(v);
                     if (v.ToLower().Contains("duration") && !d)
                     {
                         try
@@ -1177,7 +1167,7 @@ namespace FFmpegFa
                             totalTimeSpan = fFmpegInfo.Duration;
                             progress.InputFileInfo = fFmpegInfo;
 
-                            //Debug.WriteLine(fFmpegInfo.Duration.ToString());
+                            //Output(fFmpegInfo.Duration.ToString());
                             d = true;
                         }
                         catch { }
@@ -1197,7 +1187,7 @@ namespace FFmpegFa
                     // 100%
                 }
                 catch { }
-                Debug.WriteLine("End.....");
+                Output("End.....");
 
                 //GetResult("End act");
             })).Start();
@@ -1274,7 +1264,7 @@ namespace FFmpegFa
                 cmd = $"-i \"{inputFile}\" {audio.TrimEnd()} -map 0:0 -map 0:1 {map.TrimEnd()} -c:v copy -b:a {bitRate} {meta.TrimEnd()} \"{outputFile}\"";
 
 
-            Debug.WriteLine(cmd);
+            Output(cmd);
 
 
             Process process = new Process();
@@ -1289,7 +1279,7 @@ namespace FFmpegFa
             new Thread(new ThreadStart(() => {
 
                 StreamReader sr = process.StandardError;
-                Debug.WriteLine("Start.....");
+                Output("Start.....");
                 var name = "";
                 if (inputFile.Contains("\\"))
                     name = Path.GetFileName(inputFile);
@@ -1299,12 +1289,12 @@ namespace FFmpegFa
                 progress = new FFmpegProgress();
                 bool d = false;
                 TimeSpan totalTimeSpan = TimeSpan.FromMilliseconds(0);
-                Debug.WriteLine("Total:" + totalTimeSpan.TotalMilliseconds);
+                Output("Total:" + totalTimeSpan.TotalMilliseconds);
                 //frame=   18 fps=0.0 q=0.0 size=       7kB time=00:00:00.88 bitrate=  68.8kbits/s speed=1.69x   
                 while (!sr.EndOfStream)
                 {
                     var v = (sr.ReadLine());
-                    Debug.WriteLine(v);
+                    Output(v);
                     if (v.ToLower().Contains("duration") && !d)
                     {
                         try
@@ -1313,7 +1303,7 @@ namespace FFmpegFa
                             totalTimeSpan = fFmpegInfo.Duration;
                             progress.InputFileInfo = fFmpegInfo;
 
-                            //Debug.WriteLine(fFmpegInfo.Duration.ToString());
+                            //Output(fFmpegInfo.Duration.ToString());
                             d = true;
                         }
                         catch { }
@@ -1333,7 +1323,7 @@ namespace FFmpegFa
                     // 100%
                 }
                 catch { }
-                Debug.WriteLine("End.....");
+                Output("End.....");
 
                 //GetResult("End act");
             })).Start();
@@ -1353,7 +1343,7 @@ namespace FFmpegFa
             var cmd = $"-i \"{inputFile}\" -ss 00:00:06 -vframes 1 \"{outputFile}\"";
 
 
-            Debug.WriteLine(cmd);
+            Output(cmd);
 
 
             Process process = new Process();
@@ -1368,13 +1358,13 @@ namespace FFmpegFa
             new Thread(new ThreadStart(() => {
 
                 StreamReader sr = process.StandardError;
-                Debug.WriteLine("Start.....");
+                Output("Start.....");
                 while (!sr.EndOfStream)
                 {
                     var v = (sr.ReadLine());
-                    Debug.WriteLine(v);
+                    Output(v);
                 }
-                Debug.WriteLine("End.....");
+                Output("End.....");
 
                 //GetResult("End act");
             })).Start();
@@ -1413,7 +1403,7 @@ namespace FFmpegFa
             //$"\"{outputFile}\"";
 
 
-            Debug.WriteLine(cmd);
+            Output(cmd);
 
 
             Process process = new Process();
@@ -1428,7 +1418,7 @@ namespace FFmpegFa
             new Thread(new ThreadStart(() => {
 
                 StreamReader sr = process.StandardError;
-                Debug.WriteLine("Start.....");
+                Output("Start.....");
                 var name = "";
                 if (inputFile.Contains("\\"))
                     name = Path.GetFileName(inputFile);
@@ -1438,12 +1428,12 @@ namespace FFmpegFa
                 progress = new FFmpegProgress();
                 bool d = false;
                 TimeSpan totalTimeSpan = TimeSpan.FromMilliseconds(0);
-                //Debug.WriteLine("Total:" + totalTimeSpan.TotalMilliseconds);
+                //Output("Total:" + totalTimeSpan.TotalMilliseconds);
                 //frame=   18 fps=0.0 q=0.0 size=       7kB time=00:00:00.88 bitrate=  68.8kbits/s speed=1.69x   
                 while (!sr.EndOfStream)
                 {
                     var v = (sr.ReadLine());
-                    Debug.WriteLine(v);
+                    Output(v);
                     if (v.ToLower().Contains("duration") && !d)
                     {
                         try
@@ -1452,7 +1442,7 @@ namespace FFmpegFa
                             totalTimeSpan = fFmpegInfo.Duration;
                             progress.InputFileInfo = fFmpegInfo;
 
-                            //Debug.WriteLine(fFmpegInfo.Duration.ToString());
+                            //Output(fFmpegInfo.Duration.ToString());
                             d = true;
                         }
                         catch { }
@@ -1472,7 +1462,7 @@ namespace FFmpegFa
                     // 100%
                 }
                 catch { }
-                Debug.WriteLine("End.....");
+                Output("End.....");
 
                 //GetResult("End act");
             })).Start();
@@ -1489,6 +1479,8 @@ namespace FFmpegFa
                 throw new Exception("WatermarkText is null. Set an water mark text.");
             if (string.IsNullOrEmpty(watermarkImage.ImagePath))
                 throw new Exception("ImagePath is null or empty. Set an image path.");
+            //https://stackoverflow.com/questions/10918907/how-to-add-transparent-watermark-in-center-of-a-video-with-ffmpeg
+            //https://stackoverflow.com/questions/38726370/ffmpeg-text-watermark-bottom-left
 
             //ffmpeg -i input.mp4 -i logo.png -filter_complex \
             //"overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/2" \
@@ -1519,7 +1511,7 @@ namespace FFmpegFa
        $"\"{outputFile}\"";
 
 
-            Debug.WriteLine(cmd);
+            Output(cmd);
 
 
             Process process = new Process();
@@ -1534,7 +1526,7 @@ namespace FFmpegFa
             new Thread(new ThreadStart(() => {
 
                 StreamReader sr = process.StandardError;
-                Debug.WriteLine("Start.....");
+                Output("Start.....");
                 var name = "";
                 if (inputFile.Contains("\\"))
                     name = Path.GetFileName(inputFile);
@@ -1544,12 +1536,12 @@ namespace FFmpegFa
                 progress = new FFmpegProgress();
                 bool d = false;
                 TimeSpan totalTimeSpan = TimeSpan.FromMilliseconds(0);
-                //Debug.WriteLine("Total:" + totalTimeSpan.TotalMilliseconds);
+                //Output("Total:" + totalTimeSpan.TotalMilliseconds);
                 //frame=   18 fps=0.0 q=0.0 size=       7kB time=00:00:00.88 bitrate=  68.8kbits/s speed=1.69x   
                 while (!sr.EndOfStream)
                 {
                     var v = (sr.ReadLine());
-                    Debug.WriteLine(v);
+                    Output(v);
                     if (v.ToLower().Contains("duration") && !d)
                     {
                         try
@@ -1558,7 +1550,7 @@ namespace FFmpegFa
                             totalTimeSpan = fFmpegInfo.Duration;
                             progress.InputFileInfo = fFmpegInfo;
 
-                            //Debug.WriteLine(fFmpegInfo.Duration.ToString());
+                            //Output(fFmpegInfo.Duration.ToString());
                             d = true;
                         }
                         catch { }
@@ -1578,7 +1570,7 @@ namespace FFmpegFa
                     // 100%
                 }
                 catch { }
-                Debug.WriteLine("End.....");
+                Output("End.....");
 
                 //GetResult("End act");
             })).Start();
@@ -1610,7 +1602,7 @@ namespace FFmpegFa
                         var currentTime = TimeSpan.Parse(time[1]);
 
                         var percent = (int)/*Math.Round*/((currentTime.TotalMilliseconds / totalTime.TotalMilliseconds) * 100);
-                        Debug.WriteLine(percent + "%     " + time[1]);
+                        Output(percent + "%     " + time[1]);
                         progress.Percent = percent;
                         progress.CurrentTime = currentTime;
 
@@ -1660,6 +1652,17 @@ namespace FFmpegFa
 
             OnProgressChanged?.Invoke(this, progress);
 
+        }
+
+
+        void Output(object obj)
+        {
+            if (obj == null)
+                return;
+            if (!IsDebugMode)
+                return;
+
+            Debug.WriteLine(obj);
         }
 
         /// <summary>
