@@ -3,7 +3,7 @@ A tiny ffmpeg wrapper for .NET apps.
 
 | Target | Branch | Version | Download link |
 | ------ | ------ | ------ | ------ |
-| Nuget | master | v1.0.0 | [![NuGet](https://img.shields.io/nuget/v/FFmpegFa.svg)](https://www.nuget.org/packages/FFmpegFa) |
+| Nuget | master | v1.1.0 | [![NuGet](https://img.shields.io/nuget/v/FFmpegFa.svg)](https://www.nuget.org/packages/FFmpegFa) |
 
 ## Download
 Download in [releases](https://github.com/ramtinak/FFmpegFa/releases/) page.
