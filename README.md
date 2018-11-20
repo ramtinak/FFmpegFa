@@ -18,7 +18,7 @@ PM> Install-Package FFmpegFa
 
 | Platform | Supported Version |
 | ------ | ------ |
-| .NET Framework | 4.5.2 |
+| .NET Framework | 4.0 |
 
 ## About me
 Ramtin Jokar
